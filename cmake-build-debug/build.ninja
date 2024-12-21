@@ -61,6 +61,12 @@ build CMakeFiles/PEA3.dir/SimulatedAnnealing.cpp.obj: CXX_COMPILER__PEA3_unscann
   OBJECT_DIR = CMakeFiles\PEA3.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA3.dir
 
+build CMakeFiles/PEA3.dir/StaticFunctions.cpp.obj: CXX_COMPILER__PEA3_unscanned_Debug C$:/Users/Szef/CLionProjects/PEA3/StaticFunctions.cpp || cmake_object_order_depends_target_PEA3
+  DEP_FILE = CMakeFiles\PEA3.dir\StaticFunctions.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\PEA3.dir
+  OBJECT_FILE_DIR = CMakeFiles\PEA3.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target PEA3
@@ -69,7 +75,7 @@ build CMakeFiles/PEA3.dir/SimulatedAnnealing.cpp.obj: CXX_COMPILER__PEA3_unscann
 #############################################
 # Link the executable PEA3.exe
 
-build PEA3.exe: CXX_EXECUTABLE_LINKER__PEA3_Debug CMakeFiles/PEA3.dir/main.cpp.obj CMakeFiles/PEA3.dir/SimulatedAnnealing.cpp.obj
+build PEA3.exe: CXX_EXECUTABLE_LINKER__PEA3_Debug CMakeFiles/PEA3.dir/main.cpp.obj CMakeFiles/PEA3.dir/SimulatedAnnealing.cpp.obj CMakeFiles/PEA3.dir/StaticFunctions.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\PEA3.dir

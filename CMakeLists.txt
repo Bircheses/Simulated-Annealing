@@ -5,4 +5,5 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(PEA3 main.cpp
         SimulatedAnnealing.cpp
-        SimulatedAnnealing.h)
+        SimulatedAnnealing.h
+        StaticFunctions.cpp)
