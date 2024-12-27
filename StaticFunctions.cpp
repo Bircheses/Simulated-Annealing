@@ -54,12 +54,11 @@ static void show_tab(int* tab, int tabsize){
     cout << endl;
 }
 
-static void show_path (int* min_path_tab, int size) {
-    for(int i=0; i<size+1; i++) {
-        cout << min_path_tab[i];
-        if(i!=size) cout << "->";
+static void show_tour (int* tour, int size) {
+    for(int i=0; i<size; i++) {
+        cout << tour[i] << "->";
     }
-    cout << endl;
+    cout << tour[0] << endl;
 }
 
 static void delete_matrix(int** matrix, int size){
@@ -74,13 +73,6 @@ static int silnia(int size){
     if(size == 2) return 2;
     return size*silnia(size-1);
 }
-
-static int* copy(const int* tab2, int size) {
-    int* tab1 = new int[size];
-    for(int i=0; i<size+1; i++) tab1[i] = tab2[i];
-    return tab1;
-}
-
 
 /**
  * Reading data (matrix) from file
