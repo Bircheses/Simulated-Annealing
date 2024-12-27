@@ -3,7 +3,11 @@ project(PEA3)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include_directories(${PROJECT_SOURCE_DIR}/Headers
+        ${PROJECT_SOURCE_DIR}/Utilities
+)
+
 add_executable(PEA3 main.cpp
-        SimulatedAnnealing.cpp
-        SimulatedAnnealing.h
-        StaticFunctions.cpp)
+        Sources/SimulatedAnnealing.cpp
+        Headers/SimulatedAnnealing.h
+        Utilities/StaticFunctions.cpp)
