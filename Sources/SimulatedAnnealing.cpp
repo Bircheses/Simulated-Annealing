@@ -40,28 +40,25 @@ int * SimulatedAnnealing::generate_random_tour(int size) {
 }
 
 int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp, double alpha, double stop_time) {
-    // Initialize random seed
     srand(time(nullptr));
 
     Counter counter;
     counter.start();
 
-    // Initial solution (random permutation of cities)
+    // Initial solution using random method
     int* currentTour = generate_random_tour(size);
 
     int* bestTour = copy(currentTour, size);
     double currentTemp = initialTemp;
     int bestCost = calculate_cost(matrix, bestTour, size);
 
-    int stagnationCounter = 0;
-    int iterationCounter = 0;
+    // int stagnationCounter = 0;
 
     while (currentTemp > finalTemp && counter.getElapsedTime() < stop_time) {
         int* neighborTour = swap(currentTour, size);
         int currentCost = calculate_cost(matrix, currentTour, size);
         int neighbourCost = calculate_cost(matrix, neighborTour, size);
 
-        // Calculate acceptance probability
         if (neighbourCost < currentCost || exp((currentCost - neighbourCost) / currentTemp) > rand() / (double)RAND_MAX) {
             delete [] currentTour;
             currentTour = copy(neighborTour, size);
@@ -74,7 +71,7 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
             delete [] bestTour;
             bestTour = copy(currentTour, size);
             bestCost = newCost;
-            stagnationCounter = 0;
+            // stagnationCounter = 0;
         }
 
         /*if (stagnationCounter == maxStagnation) {
@@ -85,8 +82,6 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
             currentTemp = initialTemp * 0.5;
             stagnationCounter = 0;
         }*/
-
-        iterationCounter++;
 
         currentTemp *= alpha;
         delete [] neighborTour;

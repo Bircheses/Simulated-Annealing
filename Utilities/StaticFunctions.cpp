@@ -107,6 +107,10 @@ static pair<int, int**> read_from_file (string path) {
 static void read_conf_file () {
     int size;
     int** matrix;
+    double stop_time;
+    double initial_temp = 1000;
+    double final_temp = 0.001;
+    double alpha;
 
     std::ifstream file("config.txt");
     if (!file.is_open()) {
@@ -119,20 +123,40 @@ static void read_conf_file () {
             continue;
         }
 
-        if (line.front() == '0') {
+        if (!line.find("nazwa_pliku:")) {
             istringstream iss(line);
-            int command = -1;
+            string command = "";
             string argument = "";
             iss >> command >> argument;
 
             auto [fst, scd] = read_from_file(argument);
             size = fst;
             matrix = scd;
-        }else if (line.front() == '1') {
 
+            std::cout << argument << std::endl;
         }
 
+        if (!line.find("czas_stopu:")) {
+            istringstream iss(line);
+            string command = "";
+            double argument;
+            iss >> command >> argument;
 
+            stop_time = argument * 1000; // Converting to milliseconds
+
+            std::cout << stop_time << std::endl;
+        }
+
+        if (!line.find("wsp_zmiany:")) {
+            istringstream iss(line);
+            string command = "";
+            double argument;
+            iss >> command >> argument;
+
+            alpha = argument; // Change factor
+
+            std::cout << alpha << std::endl;
+        }
 
     }
     delete_matrix(matrix, size);

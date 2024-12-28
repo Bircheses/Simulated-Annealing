@@ -1,5 +1,11 @@
-# 0 nazwa_pliku - wczytanie macierzy asymetrycznej z pliku
+# wczytanie macierzy asymetrycznej z pliku (nazwa_pliku - nazwa pliku z którego odczytujemy macierz)
 
-0 matrix11x11.txt
+nazwa_pliku: matrix11x11.txt
 
-# 1 czas_stopu - kryterium stopu w sekundach dla algorytmu Symulowanego wyżarzania
+# kryterium stopu (czas_stopu - czas dla którego algorytm się zatrzyma w sekundach)
+
+czas_stopu: 10
+
+# współczynnika zmiany (wsp_zmiany - współcznynnik zmiany dla algorytmu, preferowana wartość pomiędzy (0.80 - 0.99))
+
+wsp_zmiany: 0.95
