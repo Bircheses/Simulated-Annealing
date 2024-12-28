@@ -3,6 +3,24 @@
 #include "Headers/SimulatedAnnealing.h"
 #include "Utilities/StaticFunctions.cpp"
 
+// Function to calculate the initial temperature
+double calculate_initial_temperature(int** matrix, int size, double lambda) {
+    int min = INT_MAX;
+    int max = INT_MIN;
+
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            if (i != j) {
+                if(matrix[i][j] < min) min = matrix[i][j];
+                if(matrix[i][j] > max) max = matrix[i][j];
+            }
+        }
+    }
+
+    double temperature = lambda * (max - min);
+    return temperature;
+}
+
 int main() {
     int size;
     int** matrix;
@@ -10,17 +28,14 @@ int main() {
     size = f;
     matrix = d;
 
-    // Parameters for simulated annealing
-    double initialTemp = 1000.0;
-    double finalTemp = 0.01;
-    double alpha = 0.95; // Cooling rate
+    double lambda = 1.0;
+    double initialTemp = calculate_initial_temperature(matrix, size, lambda);
 
-    // Perform simulated annealing for TSP
     SimulatedAnnealing SA;
     SA.load_matrix(matrix, size);
-    int bestCost = SA.simulated_annealing(initialTemp, finalTemp, alpha, 100000);
+    int BestCost = SA.simulated_annealing(initialTemp, 0.1, 0.95, 10000);
 
-    std::cout << "Best cost found: " << bestCost << std::endl;
+    std::cout << BestCost << std::endl;
 
     delete_matrix(matrix, size);
 

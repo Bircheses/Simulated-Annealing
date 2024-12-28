@@ -1,5 +1,6 @@
 #include "../Headers/SimulatedAnnealing.h"
 #include "../Utilities/StaticFunctions.cpp"
+#include "../Headers/Counter.h"
 #include <ctime>
 #include <cmath>
 
@@ -38,10 +39,12 @@ int * SimulatedAnnealing::generate_random_tour(int size) {
     return a;
 }
 
-int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp, double alpha,
-    int maxIterations) {
+int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp, double alpha, double stop_time) {
     // Initialize random seed
     srand(time(nullptr));
+
+    Counter counter;
+    counter.start();
 
     // Initial solution (random permutation of cities)
     int* currentTour = generate_random_tour(size);
@@ -53,7 +56,7 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
     int stagnationCounter = 0;
     int iterationCounter = 0;
 
-    while (currentTemp > finalTemp && iterationCounter < maxIterations) {
+    while (currentTemp > finalTemp && counter.getElapsedTime() < stop_time) {
         int* neighborTour = swap(currentTour, size);
         int currentCost = calculate_cost(matrix, currentTour, size);
         int neighbourCost = calculate_cost(matrix, neighborTour, size);
@@ -62,9 +65,9 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
         if (neighbourCost < currentCost || exp((currentCost - neighbourCost) / currentTemp) > rand() / (double)RAND_MAX) {
             delete [] currentTour;
             currentTour = copy(neighborTour, size);
-        }else {
+        }/*else {
             stagnationCounter++;
-        }
+        }*/
 
         int newCost = calculate_cost(matrix, currentTour, size);
         if (newCost < bestCost) {
@@ -74,14 +77,14 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
             stagnationCounter = 0;
         }
 
-        if (stagnationCounter == maxStagnation) {
+        /*if (stagnationCounter == maxStagnation) {
             delete [] currentTour;
             // Making new random tour to unstack algorithm
             currentTour = generate_random_tour(size);
             // Making more room for algorithm to traverse
             currentTemp = initialTemp * 0.5;
             stagnationCounter = 0;
-        }
+        }*/
 
         iterationCounter++;
 
@@ -93,6 +96,8 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
 
     delete [] currentTour;
     delete [] bestTour;
+
+    counter.stop();
 
     return bestCost;
 }

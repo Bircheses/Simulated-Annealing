@@ -10,4 +10,6 @@ include_directories(${PROJECT_SOURCE_DIR}/Headers
 add_executable(PEA3 main.cpp
         Sources/SimulatedAnnealing.cpp
         Headers/SimulatedAnnealing.h
-        Utilities/StaticFunctions.cpp)
+        Utilities/StaticFunctions.cpp
+        Sources/Counter.cpp
+        Headers/Counter.h)

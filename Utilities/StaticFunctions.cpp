@@ -104,13 +104,9 @@ static pair<int, int**> read_from_file (string path) {
     return std::make_pair(amount, matrix);
 }
 
-/*static void read_conf_file () {
+static void read_conf_file () {
     int size;
     int** matrix;
-    int* tab;
-    int tabsize;
-
-    int mode = 0;
 
     std::ifstream file("config.txt");
     if (!file.is_open()) {
@@ -119,12 +115,11 @@ static pair<int, int**> read_from_file (string path) {
     }
     std::string line;
     while (std::getline(file, line)) {
-        if (line.empty() || line.find("//") == 0) {
+        if (line.empty() || line.find('#') == 0) {
             continue;
         }
 
         if (line.front() == '0') {
-            mode = 0;
             istringstream iss(line);
             int command = -1;
             string argument = "";
@@ -133,130 +128,13 @@ static pair<int, int**> read_from_file (string path) {
             auto [fst, scd] = read_from_file(argument);
             size = fst;
             matrix = scd;
+        }else if (line.front() == '1') {
 
-        }else if(line.front() == '1') {
-            mode = 0;
-
-            istringstream iss(line);
-            int command = -1;
-            int argument = -1;
-            iss >> command >> argument;
-
-            size = argument;
-            matrix = generate_matrix_asymetric(argument);
-
-        }else if(line.front() == '2') {
-
-            mode = 1;
-
-            istringstream iss(line);
-            int command = -1;
-            int argument = -1;
-            iss >> command >> argument;
-
-            size = argument;
-            auto [f, s] = generate_matrix_symetric(argument);
-            tabsize = f;
-            tab = s;
-
-        }else if(line.front() == '3') {
-
-            if(mode == 0) display_matrix(matrix, size);
-            else display_tab(tab, tabsize);
-
-        }else if(line.front() == '5') {
-
-            istringstream iss(line);
-            int command = -1;
-            int argument = -1;
-            iss >> command >> argument;
-            if(argument>=size) {
-                cerr << "Zly wierzzcholek startowy" << endl;
-                break;
-            }
-            if(mode == 0) {
-                bnb.load_matrix(matrix, size);
-                auto [f, s] = bnb.BestFirstAlg(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }else {
-                bnb_symetric.load_tab_symetric(tab, tabsize, size);
-                auto [f, s] = bnb_symetric.BestFirstAlg(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }
-
-        }else if(line.front() == '6') {
-
-            istringstream iss(line);
-            int command = -1;
-            int argument = -1;
-            iss >> command >> argument;
-            if(argument>=size) {
-                cerr << "Zly wierzzcholek startowy" << endl;
-                break;
-            }
-            if(mode == 0) {
-                bnb.load_matrix(matrix, size);
-                auto [f, s] = bnb.BreadthFirstAlg(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }else {
-                bnb_symetric.load_tab_symetric(tab, tabsize, size);
-                auto [f, s] = bnb_symetric.BreadthFirstAlg(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }
-
-        }else if(line.front() == '7') {
-            istringstream iss(line);
-            int command = -1;
-            int argument = -1;
-            iss >> command >> argument;
-            if(argument>=size) {
-                cerr << "Zly wierzzcholek startowy" << endl;
-                break;
-            }
-            if(mode == 0) {
-                bnb.load_matrix(matrix, size);
-                auto [f, s] = bnb.DepthFirstAlg(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }else {
-                bnb_symetric.load_tab_symetric(tab, tabsize, size);
-                auto [f, s] = bnb_symetric.DepthFirstAlg(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }
-        }else if(line.front() == '8') {
-            istringstream iss(line);
-            int command = -1;
-            int argument = -1;
-            iss >> command >> argument;
-            if(argument>=size) {
-                cerr << "Zly wierzzcholek startowy" << endl;
-                break;
-            }
-            if(mode == 0) {
-                bnb.load_matrix(matrix, size);
-                auto [f, s] = bnb.BetterBFS(argument);
-                cout << f << endl;
-                display_path(s, size);
-                delete [] s;
-            }
-        }else if(line.front() == '9') {
-            simulate();
-        }else if(line.front() == 'A') {
-            simulate_symetric();
         }
+
+
+
     }
-    if(mode == 0) delete_matrix(matrix, size);
-    else delete [] tab;
+    delete_matrix(matrix, size);
     file.close();
-}*/
+}

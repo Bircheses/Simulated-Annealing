@@ -5,7 +5,7 @@
 
 class SimulatedAnnealing {
 private:
-    const int maxStagnation = 5;
+    const int maxStagnation = 11;
     int** matrix = nullptr;
     int size = 0;
     int* copy(const int* tour, int size);
@@ -14,7 +14,7 @@ private:
     int* generate_random_tour(int size);
 public:
     void load_matrix(int** matrix, int size);
-    int simulated_annealing(double initialTemp, double finalTemp, double alpha, int maxIterations);
+    int simulated_annealing(double initialTemp, double finalTemp, double alpha, double stop_time);
     ~SimulatedAnnealing();
 };
 

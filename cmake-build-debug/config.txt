@@ -1,19 +1,5 @@
-// 0 nazwa_pliku - wczytanie macierzy asymetrycznej z pliku, 1 rozmiar - generacja macierzy asymetrycznej o zadanym rozmiarze,
-// 2 rozmiar - generacja tablicy symetrycznej o zadanym rozmiarze
+# 0 nazwa_pliku - wczytanie macierzy asymetrycznej z pliku
 
-1 5
+0 matrix11x11.txt
 
-// 3 lub 4 - wyświetlenie lub niewyświetlenie macierzy/tablicy
-
-3
-
-// 5 - algorytm best, 6 - algorytm BFS, 7 - algorytm DFS, 8 - lepszy BFS (tylko dla macierzy asymetrycznej) po spacji wierzchołek początkowy
-
-5 0
-6 0
-7 0
-//8 0
-
-//9 - przeprowadzenie symulacji asymetrycznej, A - przeprowadzenie symulacji symetrycznej
-
-//9
+# 1 czas_stopu - kryterium stopu w sekundach dla algorytmu Symulowanego wyżarzania
