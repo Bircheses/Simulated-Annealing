@@ -12,4 +12,6 @@ add_executable(PEA3 main.cpp
         Headers/SimulatedAnnealing.h
         Utilities/StaticFunctions.cpp
         Sources/Counter.cpp
-        Headers/Counter.h)
+        Headers/Counter.h
+        Sources/NearestNeighbourAlgorithm.cpp
+        Headers/NearestNeighbourAlgorithm.h)

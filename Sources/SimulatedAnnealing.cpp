@@ -4,6 +4,8 @@
 #include <ctime>
 #include <cmath>
 
+#include "NearestNeighbourAlgorithm.h"
+
 int * SimulatedAnnealing::copy(const int *tour, int size) {
     int* temp = new int[size];
     for(int i=0; i<size; i++) temp[i] = tour[i];
@@ -45,8 +47,10 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
     Counter counter;
     counter.start();
 
-    // Initial solution using random method
-    int* currentTour = generate_random_tour(size);
+    // Initial solution using nearest neighbour algorithm
+    NearestNeighbourAlgorithm NNA;
+    NNA.load_matrix(matrix, size);
+    int* currentTour = NNA.find_shortest_path();
 
     int* bestTour = copy(currentTour, size);
     double currentTemp = initialTemp;

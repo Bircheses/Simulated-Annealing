@@ -77,6 +77,13 @@ build CMakeFiles/PEA3.dir/Sources/Counter.cpp.obj: CXX_COMPILER__PEA3_unscanned_
   OBJECT_DIR = CMakeFiles\PEA3.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA3.dir\Sources
 
+build CMakeFiles/PEA3.dir/Sources/NearestNeighbourAlgorithm.cpp.obj: CXX_COMPILER__PEA3_unscanned_Debug C$:/Users/Szef/CLionProjects/PEA3/Sources/NearestNeighbourAlgorithm.cpp || cmake_object_order_depends_target_PEA3
+  DEP_FILE = CMakeFiles\PEA3.dir\Sources\NearestNeighbourAlgorithm.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Szef/CLionProjects/PEA3/Headers -IC:/Users/Szef/CLionProjects/PEA3/Utilities
+  OBJECT_DIR = CMakeFiles\PEA3.dir
+  OBJECT_FILE_DIR = CMakeFiles\PEA3.dir\Sources
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target PEA3
@@ -85,7 +92,7 @@ build CMakeFiles/PEA3.dir/Sources/Counter.cpp.obj: CXX_COMPILER__PEA3_unscanned_
 #############################################
 # Link the executable PEA3.exe
 
-build PEA3.exe: CXX_EXECUTABLE_LINKER__PEA3_Debug CMakeFiles/PEA3.dir/main.cpp.obj CMakeFiles/PEA3.dir/Sources/SimulatedAnnealing.cpp.obj CMakeFiles/PEA3.dir/Utilities/StaticFunctions.cpp.obj CMakeFiles/PEA3.dir/Sources/Counter.cpp.obj
+build PEA3.exe: CXX_EXECUTABLE_LINKER__PEA3_Debug CMakeFiles/PEA3.dir/main.cpp.obj CMakeFiles/PEA3.dir/Sources/SimulatedAnnealing.cpp.obj CMakeFiles/PEA3.dir/Utilities/StaticFunctions.cpp.obj CMakeFiles/PEA3.dir/Sources/Counter.cpp.obj CMakeFiles/PEA3.dir/Sources/NearestNeighbourAlgorithm.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\PEA3.dir

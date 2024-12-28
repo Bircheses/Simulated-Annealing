@@ -2,5 +2,6 @@
 
 int main() {
     read_conf_file();
+    cin.get();
     return 0;
 }

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <ctime>
 
+#include "SimulatedAnnealing.h"
+
 using namespace std;
 
 static int** generate_matrix_asymetric(int size){
@@ -132,8 +134,6 @@ static void read_conf_file () {
             auto [fst, scd] = read_from_file(argument);
             size = fst;
             matrix = scd;
-
-            std::cout << argument << std::endl;
         }
 
         if (!line.find("czas_stopu:")) {
@@ -143,8 +143,6 @@ static void read_conf_file () {
             iss >> command >> argument;
 
             stop_time = argument * 1000; // Converting to milliseconds
-
-            std::cout << stop_time << std::endl;
         }
 
         if (!line.find("wsp_zmiany:")) {
@@ -154,8 +152,20 @@ static void read_conf_file () {
             iss >> command >> argument;
 
             alpha = argument; // Change factor
+        }
 
-            std::cout << alpha << std::endl;
+        if (!line.find("SA:")) {
+            istringstream iss(line);
+            string command = "";
+            int argument;
+            iss >> command >> argument;
+
+            if(argument == 1) {
+                SimulatedAnnealing SA;
+                SA.load_matrix(matrix, size);
+                int bestCost = SA.simulated_annealing(initial_temp, final_temp, alpha, stop_time);
+                std::cout << bestCost << std::endl;
+            }
         }
 
     }
