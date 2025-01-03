@@ -25,6 +25,36 @@ void SimulatedAnnealing::swap(int *tour, int i, int j) {
     std::swap(tour[i], tour[j]);
 }
 
+void SimulatedAnnealing::insert(int *tour, int i, int j) {
+    int city = tour[i];
+    if(i < j) {
+        for(int k = i; k < j; ++k) {
+            tour[k] = tour[k+1];
+        }
+    } else {
+        for(int k = i; k > j; --k) {
+            tour[k] = tour[k-1];
+        }
+    }
+    tour[j] = city;
+}
+
+void SimulatedAnnealing::inverse(int *tour, int i, int j) {
+    if(i < j){
+        while(i < j) {
+            std::swap(tour[i], tour[j]);
+            ++i;
+            --j;
+        }
+    }else{
+        while(i > j) {
+            std::swap(tour[i], tour[j]);
+            --i;
+            ++j;
+        }
+    }
+}
+
 int * SimulatedAnnealing::generate_random_tour(int size) {
     int* a = new int[size];
     for(int i=0; i<size; i++) {
@@ -64,7 +94,7 @@ double SimulatedAnnealing::compute_initial_temp(int **matrix, int size) {
     return  -(total_difference / sample_size) / std::log(0.8);
 }
 
-int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, double stop_time) {
+int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, double stop_time, int neighbour_strategy) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);// CLOCK_MONOTONIC gwarantuje stały wzrost czasu
     srand(ts.tv_nsec ^ ts.tv_sec);
@@ -100,7 +130,21 @@ int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, doub
         //int* neighborTour = swap(currentTour, size);
         int currentCost = calculate_cost(matrix, currentTour, size);
 
-        swap(currentTour, i, j);
+        switch (neighbour_strategy) {
+            case 0:
+                swap(currentTour, i, j);
+                break;
+            case 1:
+                inverse(currentTour, i, j);
+                break;
+            case 2:
+                insert(currentTour, i, j);
+                break;
+            default:
+                swap(currentTour, i, j);
+                break;
+        }
+
         int neighbourCost = calculate_cost(matrix, currentTour, size);
 
         if (neighbourCost < currentCost || (double)exp((currentCost - neighbourCost) / currentTemp) > (rand() / (double)RAND_MAX)) {
@@ -112,8 +156,20 @@ int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, doub
                 time_found = counter.getElapsedTime();
             }
         }else {
-            //Swap the solution back if solution isn't accepted and increase stagnationcounter
-            swap(currentTour, i, j);
+            switch (neighbour_strategy) {
+                case 0:
+                    swap(currentTour, i, j);
+                break;
+                case 1:
+                    inverse(currentTour, i, j);
+                break;
+                case 2:
+                    insert(currentTour, j, i);
+                break;
+                default:
+                    swap(currentTour, i, j);
+                break;
+            }
             stagnationCounter++;
         }
 
@@ -127,7 +183,6 @@ int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, doub
         currentTemp *= alpha;
     }
 
-    cout << "Strategia dywersyfikacji: " << pom << endl;
     show_tour(bestTour, size);
     cout << "Found in " << time_found << " ms." << endl;
 

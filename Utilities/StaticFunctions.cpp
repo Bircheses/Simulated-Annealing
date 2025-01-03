@@ -218,6 +218,20 @@ static void read_conf_file () {
             }
         }
 
+        if (!line.find("Simulate")) {
+            istringstream iss(line);
+            string command = "";
+            int argument;
+            iss >> command >> argument;
+
+            if(argument == 1) {
+                SimulatedAnnealing SA;
+                SA.load_matrix(matrix, size);
+                int bestCost = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time);
+                std::cout << bestCost << std::endl;
+            }
+        }
+
     }
     delete_matrix(matrix, size);
     file.close();
