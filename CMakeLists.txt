@@ -14,4 +14,5 @@ add_executable(PEA3 main.cpp
         Sources/Counter.cpp
         Headers/Counter.h
         Sources/NearestNeighbourAlgorithm.cpp
-        Headers/NearestNeighbourAlgorithm.h)
+        Headers/NearestNeighbourAlgorithm.h
+        Utilities/structures.cpp)

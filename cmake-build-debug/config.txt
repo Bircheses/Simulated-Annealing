@@ -10,8 +10,8 @@
 
 # wsp_zmiany: 0.95
 
-# Uruchomienie algorytmu symulowanego wyżarzania (SA - 1 - tak, 0 - nie)
+# Uruchomienie algorytmu symulowanego wyżarzania dla danego sąsiedztwa (0 - swap, 1 - inverse, 2 - insert)
 
-# SA: 1
+# SA: 2
 
 Simulate

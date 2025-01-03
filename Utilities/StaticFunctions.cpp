@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctime>
 #include <cmath>
+#include <thread>
 
 #include "SimulatedAnnealing.h"
 
@@ -158,6 +159,23 @@ static pair<int, int**> read_from_file (string path) {
     return std::make_pair(amount, matrix);
 }
 
+static void write_csv_file(double alpha, int strategy, return_values rv, int size) {
+    ofstream file("results.csv", std::ios::app);
+    string strat = "";
+
+    if(strategy == 0) strat = "swap";
+    else if(strategy == 1) strat = "inverse";
+    else if(strategy == 2) strat = "insert";
+
+    file << rv.cost << ";" << rv.final_temp << ";" << rv.time << ";" << strat << ";" << alpha << ";";
+
+    for(int i=0; i<size; i++) {
+        file << rv.tour[i] << " ";
+    }
+
+    file << endl;
+}
+
 static void read_conf_file () {
     int size;
     int** matrix;
@@ -210,25 +228,94 @@ static void read_conf_file () {
             int argument;
             iss >> command >> argument;
 
-            if(argument == 1) {
+            if(argument == 0) {
                 SimulatedAnnealing SA;
                 SA.load_matrix(matrix, size);
-                int bestCost = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time);
-                std::cout << bestCost << std::endl;
+                return_values rv = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time, 0);
+                show_tour(rv.tour, size);
+                std::cout << "Koszt: " << rv.cost << std::endl;
+                std::cout << "Czas zakonczenia: " << rv.time <<  std::endl;
+            }else if(argument == 1) {
+                SimulatedAnnealing SA;
+                SA.load_matrix(matrix, size);
+                return_values rv = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time, 1);
+                show_tour(rv.tour, size);
+                std::cout << "Koszt: " << rv.cost << std::endl;
+                std::cout << "Czas zakonczenia: " << rv.time <<  std::endl;
+            }else if(argument == 2) {
+                SimulatedAnnealing SA;
+                SA.load_matrix(matrix, size);
+                return_values rv = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time, 2);
+                show_tour(rv.tour, size);
+                std::cout << "Koszt: " << rv.cost << std::endl;
+                std::cout << "Czas zakonczenia: " << rv.time <<  std::endl;
             }
         }
 
         if (!line.find("Simulate")) {
-            istringstream iss(line);
-            string command = "";
-            int argument;
-            iss >> command >> argument;
+            int algorithm = 0;
+            double stop_times[3] = {60000, 120000, 240000};
+            double alphas[3] = {0.95, 0.975, 0.995};
+            double min_temp = std::numeric_limits<double>::denorm_min();
 
-            if(argument == 1) {
-                SimulatedAnnealing SA;
-                SA.load_matrix(matrix, size);
-                int bestCost = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time);
-                std::cout << bestCost << std::endl;
+            int** matrix;
+            int size;
+
+            if(algorithm == 0) {
+                auto [f1, s1] = read_atsp("ftv47.atsp");
+                matrix = s1;
+                size = f1;
+            }else if(algorithm == 1) {
+                auto [f1, s1] = read_atsp("ftv170.atsp");
+                matrix = s1;
+                size = f1;
+            }
+
+            for(int i=0; i<3; i++) {
+                for(int j=0; j<1; j++) {
+                    return_values rv1{}, rv2{}, rv3{}, rv4{};
+
+                    SimulatedAnnealing SA1;
+                    SA1.load_matrix(matrix, size);
+                    thread t1([&rv1, &SA1, min_temp, i, alphas, stop_times, algorithm]() {
+                        rv1 = SA1.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
+                    });
+
+                    SimulatedAnnealing SA2;
+                    SA2.load_matrix(matrix, size);
+                    thread t2([&rv2, &SA2, min_temp, i, alphas, stop_times, algorithm]() {
+                        rv2 = SA2.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
+                    });
+
+                    SimulatedAnnealing SA3;
+                    SA3.load_matrix(matrix, size);
+                    thread t3([&rv3, &SA3, min_temp, i, alphas, stop_times, algorithm]() {
+                        rv3 = SA3.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
+                    });
+
+                    SimulatedAnnealing SA4;
+                    SA4.load_matrix(matrix, size);
+                    thread t4([&rv4, &SA4, min_temp, i, alphas, stop_times, algorithm]() {
+                        rv4 = SA4.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
+                    });
+
+                    t1.join();
+                    t2.join();
+                    t3.join();
+                    t4.join();
+
+                    write_csv_file(alphas[i], i, rv1, size);
+                    delete[] rv1.tour;
+
+                    write_csv_file(alphas[i], i, rv2, size);
+                    delete[] rv2.tour;
+
+                    write_csv_file(alphas[i], i, rv3, size);
+                    delete[] rv3.tour;
+
+                    write_csv_file(alphas[i], i, rv4, size);
+                    delete[] rv4.tour;
+                }
             }
         }
 

@@ -1,7 +1,7 @@
 #ifndef SIMULATEDANNEALING_H
 #define SIMULATEDANNEALING_H
 
-
+#include "../Utilities/Structures.cpp"
 
 class SimulatedAnnealing {
 private:
@@ -25,7 +25,7 @@ public:
      * @param neighbour_strategy - 0 for swap, 1 for inverse, 2 for insert, which determines the strategy of picking neighbour tour
      * @return cost of best tour that algorithm has found
      */
-    int simulated_annealing(double finalTemp, double alpha, double stop_time, int neighbour_strategy);
+    return_values simulated_annealing(double finalTemp, double alpha, double stop_time, int neighbour_strategy);
     ~SimulatedAnnealing();
 };
 

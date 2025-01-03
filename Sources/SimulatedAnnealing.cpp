@@ -1,6 +1,6 @@
 #include "../Headers/SimulatedAnnealing.h"
-#include "../Utilities/StaticFunctions.cpp"
 #include "../Headers/Counter.h"
+#include "../Utilities/StaticFunctions.cpp"
 #include <ctime>
 #include <cmath>
 
@@ -94,7 +94,7 @@ double SimulatedAnnealing::compute_initial_temp(int **matrix, int size) {
     return  -(total_difference / sample_size) / std::log(0.8);
 }
 
-int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, double stop_time, int neighbour_strategy) {
+return_values SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, double stop_time, int neighbour_strategy) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);// CLOCK_MONOTONIC gwarantuje stały wzrost czasu
     srand(ts.tv_nsec ^ ts.tv_sec);
@@ -117,8 +117,8 @@ int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, doub
     int* bestTour = copy(currentTour, size);
     int bestCost = calculate_cost(matrix, bestTour, size);
 
-    show_tour(currentTour, size);
-    std::cout << "koszt: " << bestCost << " temp: " << currentTemp << std::endl;
+    /*show_tour(currentTour, size);
+    std::cout << "koszt: " << bestCost << " temp: " << currentTemp << std::endl;*/
 
     int pom = 0;
 
@@ -183,15 +183,13 @@ int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, doub
         currentTemp *= alpha;
     }
 
-    show_tour(bestTour, size);
-    cout << "Found in " << time_found << " ms." << endl;
+    return_values rv = {bestCost, bestTour, time_found, currentTemp};
 
     delete [] currentTour;
-    delete [] bestTour;
 
     counter.stop();
 
-    return bestCost;
+    return rv;
 }
 
 void SimulatedAnnealing::load_matrix(int **matrix, int size) {
