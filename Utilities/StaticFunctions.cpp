@@ -162,7 +162,6 @@ static void read_conf_file () {
     int size;
     int** matrix;
     double stop_time;
-    double final_temp = 0.000001;
     double alpha;
 
     std::ifstream file("config.txt");
@@ -214,7 +213,7 @@ static void read_conf_file () {
             if(argument == 1) {
                 SimulatedAnnealing SA;
                 SA.load_matrix(matrix, size);
-                int bestCost = SA.simulated_annealing(final_temp, alpha, stop_time);
+                int bestCost = SA.simulated_annealing(std::numeric_limits<double>::denorm_min(), alpha, stop_time);
                 std::cout << bestCost << std::endl;
             }
         }

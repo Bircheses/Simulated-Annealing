@@ -61,7 +61,7 @@ int* NearestNeighbourAlgorithm::find_shortest_path() {
         visited[point] = true;
         int min = INT_MAX;
         for(int j=0; j<size; j++) {
-            if(point == j /*matrix_copy[point][j] == -1*/ || visited[j] == true) continue;
+            if(point == j || visited[j] == true) continue;
             if(matrix_copy[point][j]<min) {
                 min = matrix_copy[point][j];
                 temp = j;

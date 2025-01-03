@@ -21,12 +21,8 @@ int SimulatedAnnealing::calculate_cost(int **matrix, int *tour, int size) {
     return totalCost;
 }
 
-int * SimulatedAnnealing::swap(int *currentTour, int size) {
-    int* newTour = copy(currentTour, size);
-    int i = rand() % size;
-    int j = rand() % size;
-    std::swap(newTour[i], newTour[j]);
-    return newTour;
+void SimulatedAnnealing::swap(int *tour, int i, int j) {
+    std::swap(tour[i], tour[j]);
 }
 
 int * SimulatedAnnealing::generate_random_tour(int size) {
@@ -47,11 +43,21 @@ double SimulatedAnnealing::compute_initial_temp(int **matrix, int size) {
     int sample_size = size*size;
 
     for (int i = 0; i < sample_size; ++i) {
-        int* neighbor_solution = swap(current_solution, size);
+        int j = rand() % size;
+        int k = rand() % size;
+        while (j == k) k = rand() % size;
+
         int current_cost = calculate_cost(matrix, current_solution, size);
-        int neighbor_cost = calculate_cost(matrix, neighbor_solution, size);
+
+        //Create new tour using swap
+        swap(current_solution, j, k);
+        int neighbor_cost = calculate_cost(matrix, current_solution, size);
+
+        //Recreate original tour using swap
+        swap(current_solution, j, k);
+
+        //Increase the difference for temperature compute
         total_difference += std::abs(neighbor_cost - current_cost);
-        delete[] neighbor_solution;
     }
 
     delete[] current_solution;
@@ -59,48 +65,69 @@ double SimulatedAnnealing::compute_initial_temp(int **matrix, int size) {
 }
 
 int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, double stop_time) {
-    srand(time(nullptr));
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);// CLOCK_MONOTONIC gwarantuje stały wzrost czasu
+    srand(ts.tv_nsec ^ ts.tv_sec);
 
     Counter counter;
     counter.start();
 
     double time_found = 0.0;
+    int stagnationCounter = 0;
 
-    // Initial solution using nearest neighbour algorithm
+    // Initial tour using nearest neighbour algorithm
     NearestNeighbourAlgorithm NNA;
     NNA.load_matrix(matrix, size);
     int* currentTour = NNA.find_shortest_path();
 
-    int* bestTour = copy(currentTour, size);
+    // Initial temperature
     double currentTemp = compute_initial_temp(matrix, size);
+
+    // Storing best tour and best cost
+    int* bestTour = copy(currentTour, size);
     int bestCost = calculate_cost(matrix, bestTour, size);
 
     show_tour(currentTour, size);
-    std::cout << bestCost << std::endl;
-    std::cout << currentTemp << std::endl;
+    std::cout << "koszt: " << bestCost << " temp: " << currentTemp << std::endl;
 
-    while (currentTemp > finalTemp /*&& counter.getElapsedTime() < stop_time*/) {
-        int* neighborTour = swap(currentTour, size);
+    int pom = 0;
+
+    while (currentTemp > finalTemp && counter.getElapsedTime() < stop_time) {
+        int i = rand() % size;
+        int j = rand() % size;
+        while (i == j) j = rand() % size;
+
+        //int* neighborTour = swap(currentTour, size);
         int currentCost = calculate_cost(matrix, currentTour, size);
-        int neighbourCost = calculate_cost(matrix, neighborTour, size);
 
-        if (neighbourCost < currentCost || exp((currentCost - neighbourCost) / currentTemp) > (rand() / (double)RAND_MAX)) {
-            delete [] currentTour;
-            currentTour = copy(neighborTour, size);
+        swap(currentTour, i, j);
+        int neighbourCost = calculate_cost(matrix, currentTour, size);
+
+        if (neighbourCost < currentCost || (double)exp((currentCost - neighbourCost) / currentTemp) > (rand() / (double)RAND_MAX)) {
+            stagnationCounter = 0;
+            if(neighbourCost < bestCost) {
+                delete [] bestTour;
+                bestTour = copy(currentTour, size);
+                bestCost = neighbourCost;
+                time_found = counter.getElapsedTime();
+            }
+        }else {
+            //Swap the solution back if solution isn't accepted and increase stagnationcounter
+            swap(currentTour, i, j);
+            stagnationCounter++;
         }
 
-        int newCost = calculate_cost(matrix, currentTour, size);
-        if (newCost < bestCost) {
-            delete [] bestTour;
-            bestTour = copy(currentTour, size);
-            bestCost = newCost;
-            time_found = counter.getElapsedTime();
+        if (stagnationCounter >= maxStagnation) {
+            delete [] currentTour;
+            currentTour = NNA.find_shortest_path();
+            stagnationCounter = 0;
+            pom++;
         }
 
         currentTemp *= alpha;
-        delete [] neighborTour;
     }
 
+    cout << "Strategia dywersyfikacji: " << pom << endl;
     show_tour(bestTour, size);
     cout << "Found in " << time_found << " ms." << endl;
 
