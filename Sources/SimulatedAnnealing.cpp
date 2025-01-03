@@ -41,11 +41,30 @@ int * SimulatedAnnealing::generate_random_tour(int size) {
     return a;
 }
 
-int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp, double alpha, double stop_time) {
+double SimulatedAnnealing::compute_initial_temp(int **matrix, int size) {
+    double total_difference = 0.0;
+    int* current_solution = generate_random_tour(size);
+    int sample_size = size*size;
+
+    for (int i = 0; i < sample_size; ++i) {
+        int* neighbor_solution = swap(current_solution, size);
+        int current_cost = calculate_cost(matrix, current_solution, size);
+        int neighbor_cost = calculate_cost(matrix, neighbor_solution, size);
+        total_difference += std::abs(neighbor_cost - current_cost);
+        delete[] neighbor_solution;
+    }
+
+    delete[] current_solution;
+    return  -(total_difference / sample_size) / std::log(0.8);
+}
+
+int SimulatedAnnealing::simulated_annealing(double finalTemp, double alpha, double stop_time) {
     srand(time(nullptr));
 
     Counter counter;
     counter.start();
+
+    double time_found = 0.0;
 
     // Initial solution using nearest neighbour algorithm
     NearestNeighbourAlgorithm NNA;
@@ -53,45 +72,37 @@ int SimulatedAnnealing::simulated_annealing(double initialTemp, double finalTemp
     int* currentTour = NNA.find_shortest_path();
 
     int* bestTour = copy(currentTour, size);
-    double currentTemp = initialTemp;
+    double currentTemp = compute_initial_temp(matrix, size);
     int bestCost = calculate_cost(matrix, bestTour, size);
 
-    // int stagnationCounter = 0;
+    show_tour(currentTour, size);
+    std::cout << bestCost << std::endl;
+    std::cout << currentTemp << std::endl;
 
-    while (currentTemp > finalTemp && counter.getElapsedTime() < stop_time) {
+    while (currentTemp > finalTemp /*&& counter.getElapsedTime() < stop_time*/) {
         int* neighborTour = swap(currentTour, size);
         int currentCost = calculate_cost(matrix, currentTour, size);
         int neighbourCost = calculate_cost(matrix, neighborTour, size);
 
-        if (neighbourCost < currentCost || exp((currentCost - neighbourCost) / currentTemp) > rand() / (double)RAND_MAX) {
+        if (neighbourCost < currentCost || exp((currentCost - neighbourCost) / currentTemp) > (rand() / (double)RAND_MAX)) {
             delete [] currentTour;
             currentTour = copy(neighborTour, size);
-        }/*else {
-            stagnationCounter++;
-        }*/
+        }
 
         int newCost = calculate_cost(matrix, currentTour, size);
         if (newCost < bestCost) {
             delete [] bestTour;
             bestTour = copy(currentTour, size);
             bestCost = newCost;
-            // stagnationCounter = 0;
+            time_found = counter.getElapsedTime();
         }
-
-        /*if (stagnationCounter == maxStagnation) {
-            delete [] currentTour;
-            // Making new random tour to unstack algorithm
-            currentTour = generate_random_tour(size);
-            // Making more room for algorithm to traverse
-            currentTemp = initialTemp * 0.5;
-            stagnationCounter = 0;
-        }*/
 
         currentTemp *= alpha;
         delete [] neighborTour;
     }
 
     show_tour(bestTour, size);
+    cout << "Found in " << time_found << " ms." << endl;
 
     delete [] currentTour;
     delete [] bestTour;

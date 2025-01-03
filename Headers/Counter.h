@@ -13,7 +13,7 @@ private:
 public:
     void start(); //starts clock
     void stop(); //stops clock
-    [[nodiscard]] double getElapsedTime() const; //returns value of time passed between start and end point in milliseconds
+    [[nodiscard]] double getElapsedTime(); //returns value of time passed between start and end point in milliseconds
 };
 
 

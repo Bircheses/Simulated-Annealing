@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <ctime>
+#include <cmath>
 
 #include "SimulatedAnnealing.h"
 
@@ -71,6 +72,57 @@ static void delete_matrix(int** matrix, int size){
     delete [] matrix;
 }
 
+// Function to read ATSP (Asymmetric TSP) file and create a distance matrix
+static pair<int, int**> read_atsp(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Error opening file: " << filename << endl;
+        return std::make_pair(-1, nullptr);
+    }
+
+    string line, key;
+    int** matrix = nullptr;
+    bool is_edge_weight_section = false;
+    int size = 0;
+
+    int i=0, j=0;
+
+    while (getline(file, line)) {
+        stringstream ss(line);
+
+        ss >> key;
+
+        if (key == "DIMENSION:") {
+            ss >> size;
+            matrix = new int*[size];
+            for (int i = 0; i < size; i++) {
+                matrix[i] = new int[size];
+            }
+        } else if (key == "EDGE_WEIGHT_SECTION") {
+            is_edge_weight_section = true;
+            continue;
+        } else if (key == "EOF") {
+            break;
+        }
+
+        if (is_edge_weight_section) {
+            istringstream stream(line);
+            int value;
+            while(stream >> value) {
+                if(i==size) {
+                    i=0;
+                    j++;
+                }
+                matrix[j][i] = value;
+                i++;
+            }
+        }
+    }
+
+    file.close();
+    return std::make_pair(size, matrix);
+}
+
 static int silnia(int size){
     if(size == 2) return 2;
     return size*silnia(size-1);
@@ -110,8 +162,7 @@ static void read_conf_file () {
     int size;
     int** matrix;
     double stop_time;
-    double initial_temp = 1000;
-    double final_temp = 0.001;
+    double final_temp = 0.000001;
     double alpha;
 
     std::ifstream file("config.txt");
@@ -131,7 +182,7 @@ static void read_conf_file () {
             string argument = "";
             iss >> command >> argument;
 
-            auto [fst, scd] = read_from_file(argument);
+            auto [fst, scd] = read_atsp(argument);
             size = fst;
             matrix = scd;
         }
@@ -163,7 +214,7 @@ static void read_conf_file () {
             if(argument == 1) {
                 SimulatedAnnealing SA;
                 SA.load_matrix(matrix, size);
-                int bestCost = SA.simulated_annealing(initial_temp, final_temp, alpha, stop_time);
+                int bestCost = SA.simulated_annealing(final_temp, alpha, stop_time);
                 std::cout << bestCost << std::endl;
             }
         }

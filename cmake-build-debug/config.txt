@@ -1,6 +1,6 @@
 # wczytanie macierzy asymetrycznej z pliku (nazwa_pliku - nazwa pliku z którego odczytujemy macierz)
 
-nazwa_pliku: matrix11x11.txt
+nazwa_pliku: ftv47.atsp
 
 # kryterium stopu (czas_stopu - czas dla którego algorytm się zatrzyma w sekundach)
 

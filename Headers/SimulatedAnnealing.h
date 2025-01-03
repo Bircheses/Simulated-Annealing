@@ -12,9 +12,10 @@ private:
     int calculate_cost(int** matrix, int* tour, int size);
     int* swap(int* currentTour, int size);
     int* generate_random_tour(int size);
+    double compute_initial_temp(int** matrix, int size);
 public:
     void load_matrix(int** matrix, int size);
-    int simulated_annealing(double initialTemp, double finalTemp, double alpha, double stop_time);
+    int simulated_annealing(double finalTemp, double alpha, double stop_time);
     ~SimulatedAnnealing();
 };
 

@@ -9,6 +9,8 @@ void Counter::stop() {
     elapsedTime = std::chrono::duration<double, std::milli>(endTime - startTime).count();
 }
 
-double Counter::getElapsedTime() const {
+double Counter::getElapsedTime(){
+    endTime = std::chrono::high_resolution_clock::now();
+    elapsedTime = std::chrono::duration<double, std::milli>(endTime - startTime).count();
     return elapsedTime;
 }
