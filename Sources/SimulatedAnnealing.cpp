@@ -117,9 +117,6 @@ return_values SimulatedAnnealing::simulated_annealing(double finalTemp, double a
     int* bestTour = copy(currentTour, size);
     int bestCost = calculate_cost(matrix, bestTour, size);
 
-    /*show_tour(currentTour, size);
-    std::cout << "koszt: " << bestCost << " temp: " << currentTemp << std::endl;*/
-
     int pom = 0;
 
     while (currentTemp > finalTemp && counter.getElapsedTime() < stop_time) {

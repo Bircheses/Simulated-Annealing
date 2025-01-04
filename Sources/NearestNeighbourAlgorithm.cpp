@@ -46,7 +46,9 @@ void NearestNeighbourAlgorithm::load_matrix(int **matrix, int size) {
  * @return pair of int and int*, first one is minimal path cost value, the latter is a array holding this path from vertex to vertex
  */
 int* NearestNeighbourAlgorithm::find_shortest_path() {
-    srand(time(NULL));
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);// CLOCK_MONOTONIC gwarantuje stały wzrost czasu
+    srand(ts.tv_nsec ^ ts.tv_sec);
 
     int* tour = new int[size];
     int starting_vertex = rand() % size;

@@ -176,6 +176,18 @@ static void write_csv_file(double alpha, int strategy, return_values rv, int siz
     file << endl;
 }
 
+static void start_thread(int** matrix, int size, int neighbour_strategy, double alpha, double stop_time, double min_temp) {
+    return_values rv;
+
+    SimulatedAnnealing SA;
+    SA.load_matrix(matrix, size);
+
+    rv = SA.simulated_annealing(min_temp, alpha, stop_time, neighbour_strategy);
+
+    write_csv_file(alpha, neighbour_strategy, rv, size);
+    delete[] rv.tour;
+}
+
 static void read_conf_file () {
     int size;
     int** matrix;
@@ -271,50 +283,29 @@ static void read_conf_file () {
                 size = f1;
             }
 
-            for(int i=0; i<3; i++) {
-                for(int j=0; j<1; j++) {
-                    return_values rv1{}, rv2{}, rv3{}, rv4{};
+            for(int k=0; k<3; k++) {
+                for(int i=0; i<3; i++) {
+                    for(int j=0; j<3; j++) {
+                        thread t1(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
 
-                    SimulatedAnnealing SA1;
-                    SA1.load_matrix(matrix, size);
-                    thread t1([&rv1, &SA1, min_temp, i, alphas, stop_times, algorithm]() {
-                        rv1 = SA1.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
-                    });
+                        this_thread::sleep_for(std::chrono::milliseconds(200));
 
-                    SimulatedAnnealing SA2;
-                    SA2.load_matrix(matrix, size);
-                    thread t2([&rv2, &SA2, min_temp, i, alphas, stop_times, algorithm]() {
-                        rv2 = SA2.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
-                    });
+                        thread t2(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
 
-                    SimulatedAnnealing SA3;
-                    SA3.load_matrix(matrix, size);
-                    thread t3([&rv3, &SA3, min_temp, i, alphas, stop_times, algorithm]() {
-                        rv3 = SA3.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
-                    });
+                        this_thread::sleep_for(std::chrono::milliseconds(200));
 
-                    SimulatedAnnealing SA4;
-                    SA4.load_matrix(matrix, size);
-                    thread t4([&rv4, &SA4, min_temp, i, alphas, stop_times, algorithm]() {
-                        rv4 = SA4.simulated_annealing(min_temp, alphas[i], stop_times[algorithm], i);
-                    });
+                        thread t3(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
 
-                    t1.join();
-                    t2.join();
-                    t3.join();
-                    t4.join();
+                        this_thread::sleep_for(std::chrono::milliseconds(200));
 
-                    write_csv_file(alphas[i], i, rv1, size);
-                    delete[] rv1.tour;
+                        thread t4(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
 
-                    write_csv_file(alphas[i], i, rv2, size);
-                    delete[] rv2.tour;
 
-                    write_csv_file(alphas[i], i, rv3, size);
-                    delete[] rv3.tour;
-
-                    write_csv_file(alphas[i], i, rv4, size);
-                    delete[] rv4.tour;
+                        t1.join();
+                        t2.join();
+                        t3.join();
+                        t4.join();
+                    }
                 }
             }
         }
