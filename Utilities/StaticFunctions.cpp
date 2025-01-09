@@ -265,7 +265,7 @@ static void read_conf_file () {
         }
 
         if (!line.find("Simulate")) {
-            int algorithm = 0;
+            int algorithm = 1;
             double stop_times[3] = {60000, 120000, 240000};
             double alphas[3] = {0.95, 0.975, 0.995};
             double min_temp = std::numeric_limits<double>::denorm_min();
@@ -281,30 +281,38 @@ static void read_conf_file () {
                 auto [f1, s1] = read_atsp("ftv170.atsp");
                 matrix = s1;
                 size = f1;
+            }else if(algorithm == 2) {
+                auto [f1, s1] = read_atsp("rbg403.atsp");
+                matrix = s1;
+                size = f1;
             }
 
-            for(int k=0; k<3; k++) {
+            for(int k=1; k<2; k++) {
                 for(int i=0; i<3; i++) {
-                    for(int j=0; j<3; j++) {
-                        thread t1(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
+                    for(int j=0; j<2; j++) {
+                        thread t1(start_thread, matrix, size, k, alphas[i], stop_times[algorithm], min_temp);
 
                         this_thread::sleep_for(std::chrono::milliseconds(200));
 
-                        thread t2(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
+                        thread t2(start_thread, matrix, size, k, alphas[i], stop_times[algorithm], min_temp);
 
                         this_thread::sleep_for(std::chrono::milliseconds(200));
 
-                        thread t3(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
+                        thread t3(start_thread, matrix, size, k, alphas[i], stop_times[algorithm], min_temp);
 
                         this_thread::sleep_for(std::chrono::milliseconds(200));
 
-                        thread t4(start_thread, matrix, size, k, alphas[i], stop_times[i], min_temp);
+                        thread t4(start_thread, matrix, size, k, alphas[i], stop_times[algorithm], min_temp);
 
+                        this_thread::sleep_for(std::chrono::milliseconds(200));
+
+                        thread t5(start_thread, matrix, size, k, alphas[i], stop_times[algorithm], min_temp);
 
                         t1.join();
                         t2.join();
                         t3.join();
                         t4.join();
+                        t5.join();
                     }
                 }
             }

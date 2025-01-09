@@ -1,17 +1,19 @@
 # wczytanie macierzy asymetrycznej z pliku (nazwa_pliku - nazwa pliku z którego odczytujemy macierz)
 
-# nazwa_pliku: ftv47.atsp
+nazwa_pliku: ftv47.atsp
 
 # kryterium stopu (czas_stopu - czas dla którego algorytm się zatrzyma w sekundach)
 
-# czas_stopu: 10
+czas_stopu: 10
 
 # współczynnika zmiany (wsp_zmiany - współcznynnik zmiany dla algorytmu, preferowana wartość pomiędzy (0.80 - 0.99))
 
-# wsp_zmiany: 0.95
+wsp_zmiany: 0.95
 
 # Uruchomienie algorytmu symulowanego wyżarzania dla danego sąsiedztwa (0 - swap, 1 - inverse, 2 - insert)
 
-# SA: 2
+SA: 2
 
-Simulate
+
+# Poniższa linijka kodu została użyta do symulacji algorytmu dla wszystkich parametrów
+# Simulate
